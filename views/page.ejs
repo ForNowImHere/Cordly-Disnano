@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cordly Disnano</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: <%= mode === "dark" ? "#121212" : "#f0f0f0" %>;
+      color: <%= mode === "dark" ? "#fff" : "#000" %>;
+      transition: 0.3s;
+    }
+    .server {
+      background: <%= mode === "dark" ? "#1e1e1e" : "#fff" %>;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 8px;
+    }
+    .suspended { opacity: 0.5; }
+    .overlay { color: red; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Cordly Disnano</h1>
+
+  <% if (user) { %>
+    <p>Welcome, <%= user.username || user.email %> | <a href="/logout">Logout</a></p>
+    <form action="/add" method="POST">
+      <input type="text" name="name" placeholder="Server Name" required>
+      <input type="url" name="url" placeholder="Discord Invite URL" required>
+      <input type="text" name="description" placeholder="Description">
+      <button type="submit">Add Server</button>
+    </form>
+  <% } else { %>
+    <form action="/login" method="POST">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <form action="/register" method="POST">
+      <input type="email" name="email" placeholder="New Email" required>
+      <input type="password" name="password" placeholder="New Password" required>
+      <button type="submit">Register</button>
+    </form>
+    <a href="/auth/discord">Login with Discord</a>
+  <% } %>
+
+  <h2>Server List</h2>
+  <% servers.forEach(server => { if (server.status !== "banned") { %>
+    <div class="server <%= server.status %>">
+      <h3><%= server.name %></h3>
+      <p><%= server.description %></p>
+      <% if (server.status === "suspended") { %>
+        <p class="overlay">Suspended</p>
+      <% } else if (server.status === "pending") { %>
+        <p class="overlay">Pending Review</p>
+      <% } else { %>
+        <a href="<%= server.url %>" target="_blank">Join</a>
+      <% } %>
+    </div>
+  <% } }) %>
+</body>
+</html>
