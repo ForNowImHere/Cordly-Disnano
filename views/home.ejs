@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head><title><%= siteName %></title></head>
+<body style="background:<%= theme==='dark'?'#121212':'#fff' %>;color:<%= theme==='dark'?'#fff':'#000' %>">
+<h1><%= siteName %></h1>
+<p><em><%= slogan %></em></p>
+
+<% if(user){ %>
+<p>Welcome <%= user.username %> | <a href="/logout">Logout</a></p>
+<form method="POST" action="/add">
+<input name="name" placeholder="Server Name" required>
+<input name="url" placeholder="Discord Invite URL" required>
+<textarea name="description" placeholder="Description"></textarea>
+<button type="submit">Add Server</button>
+</form>
+<% } else { %>
+<a href="/auth/discord" onclick="window.open('/auth/discord','Discord Login','width=500,height=700'); return false;">Login with Discord</a>
+<% } %>
+
+<h2>Servers</h2>
+<% servers.forEach(s=>{ %>
+<div style="margin:10px;padding:10px;border:1px solid gray;<%= s.status==='suspended'?'opacity:0.5;':'' %>">
+<h3><%= s.name %></h3>
+<p><%= s.description %></p>
+<a href="<%= s.url %>" target="_blank">Join</a>
+</div>
+<% }) %>
+<a href="/tos">Terms of Service</a>
+</body>
+</html>
